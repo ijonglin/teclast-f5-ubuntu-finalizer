@@ -130,3 +130,7 @@ If you are also tight with your wallet, but loose with your engineering time, an
 ideal of a Linux Laptop, please contact me and help in any way possible (testing, coding, whatever).  The more followers
 and feedback -- I get the more likely I am to do the actual work.  Otherwise, it's a just a bit of hobby for me
 and will go at my lazy engineer pace.
+
+## Related Repos for browsing
+
+@pokulan -- Working Telcast F7 Kernel from 4.15 [https://github.com/pokulan/Ubuntu-Kernel-4.15.0-20-for-Teclast-F7]
