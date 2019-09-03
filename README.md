@@ -32,14 +32,14 @@ Currently, this project targets on the following systems:
  Feature | Teclast F5
 -------- | -------------
 Target Patch Kernel | 5.1.0-rc7
-Supported Linux Flavor | Ubuntu 18.04
+Supported Linux Flavor | Ubuntu 18.04.3 LTS
 Keyboard | Works
 Touchpad | Works
 Wifi | Works at N speeds
 Sound/Audio | Works
 USB  | Works
 USB Camera | Works
-Video Acceleration | Works
+Video Acceleration | Works @ 1080p
 Streaming Video: Netflix, HBO Now | Works
 Web Telephony: Skype, Google Hangouts | Works
 Bluetooth | Works, but janky HQ audio
@@ -51,12 +51,24 @@ S3 Sleep Power Draw |  ~ 1W
 Run time (on provided battery 29Wh) | 2-3 hours on a single charge
 Run time (on expanded battery 70Wh) | 6-8 hours on a single charge
 
+The current configuration is acceptable as an actually stable working Linux
+well-made laptop with decent power characteristics for a remarkable price.
+My old XPS13 has the stability, but poor battery time.  The Asus-TP203NAH was
+good, but lacked the CPU and screen size.  This power is only here because
+the customer hW modifications currently more-than-double the battery size.
+A proper Si0x or S3 sleep state would put laptop into super cool territory.
+
 ## Recommended Mods
-Current HW/SW Kernel/System/ACPI Modifications To Get a $400 Dream Ubuntu Linux Laptop
+Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ubuntu Linux Laptop
+
 TODO: Create a single Makefile to drive all the modifications on a given system
 
 ### BIOS Settings
-TODO: Take pictures of all the BIOS screens .
+Quick Notes: Key bios setting are:
+* Choose the optimized defaults as baseline.
+* To turn on the Low S0 State (which disables S3) in the Advanced -> RC ACPI Settings.
+
+TODO: Take pictures of all the BIOS screens.
 
 ### Linux Kernel (/kernel)
 Will post the required patch that seems stable for me in the contents of the kernel subdirectory.  The base
@@ -77,8 +89,13 @@ The magical pieces of information that you need are as follows:
 
 
 ### System Modifications (/sw)
-Even with the kernel, some customization of kernel blacklist and preparation for kernel module sleep is required.
-Will post the required patch that seems stable for me.
+Even with the patched kernel, some system customizations must be made to guarantee stability.  These changes
+regard kernel blacklist and preparation for kernel module sleep.  Will post the required patch that seems stable for me.
+
+Quick notes: Some modifications that are necessary:
+* To consistently get the touchpad to come back from sleep, you will have to remove and add the i2c-hid
+kernel module before and after sleep, respectively.
+
 TODO: Create the code to automagically create the dpkg for installation.  Also, learn how to do that.
 
 ### Power Testing
