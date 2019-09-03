@@ -1,0 +1,13 @@
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index db578783dd36..63f5ac612833 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -59,7 +59,7 @@ EXPORT_SYMBOL(__mutex_init);
+  * Bit2 indicates handoff has been done and we're waiting for pickup.
+  */
+ #define MUTEX_FLAG_WAITERS	0x01
+-#define MUTEX_FLAG_HANDOFF	0x02
++#define MUTEX_FLAG_HANDOFF	0x00
+ #define MUTEX_FLAG_PICKUP	0x04
+ 
+ #define MUTEX_FLAGS		0x07
