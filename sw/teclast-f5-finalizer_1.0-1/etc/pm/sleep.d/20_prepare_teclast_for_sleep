@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Action script
+#
+
+
+case "${1}" in
+        hibernate|suspend)
+		modprobe -r iwlmvm
+		modprobe -r i2c_hid
+                ;;
+        resume|thaw)
+		modprobe i2c_hid
+		( sleep 5 && modprobe iwlwifi ) &
+                ;;
+esac
+

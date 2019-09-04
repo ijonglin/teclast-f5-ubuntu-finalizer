@@ -1,0 +1,9 @@
+Package: teclast-f5-finalizer
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: all
+Depends:
+Maintainer: I-Jong Lin <ijong.lin31@gmail.com>
+Description: Teclast F5 Quirky System Scripts
+ Some quirky sleep scripts to make your Teclast F5 laptop stable.
