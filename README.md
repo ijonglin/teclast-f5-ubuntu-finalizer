@@ -58,6 +58,11 @@ good, but lacked the CPU and screen size.  This power is only here because
 the customer hW modifications currently more-than-double the battery size.
 A proper Si0x or S3 sleep state would put laptop into super cool territory.
 
+## Pre-compiled Mods
+
+Although this is a source repo, I've decided to add the pre-compiled artifacts for those who are too lazy
+to build 'em.
+
 ## Recommended Mods
 Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ubuntu Linux Laptop
 
