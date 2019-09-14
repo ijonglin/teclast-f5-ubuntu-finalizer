@@ -10,8 +10,8 @@ IASL_TARGETS = \
 	extract/SSDT7.dat \
 	extract/SSDT8.dat \
 	extract/SSDT9.dat \
-	extract/SSDT10.dat \
-	extract/SSDT11.dat
+	extract/SSDT10.dat
+#	extract/SSDT11.dat
 
 help:
 	@echo "Makefile Targets for DSDT Override Environment:"
@@ -45,7 +45,7 @@ extract:
 	sudo cat /sys/firmware/acpi/tables/SSDT8 > extract/SSDT8.dat
 	sudo cat /sys/firmware/acpi/tables/SSDT9 > extract/SSDT9.dat
 	sudo cat /sys/firmware/acpi/tables/SSDT10 > extract/SSDT10.dat
-	sudo cat /sys/firmware/acpi/tables/SSDT11 > extract/SSDT11.dat
+#	sudo cat /sys/firmware/acpi/tables/SSDT11 > extract/SSDT11.dat
 
 disassemble:  extract  iasl_disassemble
 

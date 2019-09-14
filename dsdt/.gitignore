@@ -1,2 +1,4 @@
 extract
 *.cpio
+**/*.log
+**/*.dsl
