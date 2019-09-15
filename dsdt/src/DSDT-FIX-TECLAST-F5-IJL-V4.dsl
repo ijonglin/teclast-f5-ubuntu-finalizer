@@ -2,7 +2,7 @@
  * Intel ACPI Component Architecture
  * AML/ASL+ Disassembler version 20190816 (64-bit version)
  * Copyright (c) 2000 - 2019 Intel Corporation
- * 
+ *
  * Disassembling to symbolic ASL+ operators
  *
  * Disassembly of examples/DSDT-F7.dat, Fri Sep 13 21:31:04 2019
@@ -17,6 +17,10 @@
  *     OEM Revision     0x01072009 (17244169)
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20160930 (538315056)
+ *
+ * Version 4:
+ *   S3 works, but no I2C devices are recognized from the boot time.  Keyboard is totally
+ *   functional w.r.t. S3 sleep.
  */
 DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
 {
