@@ -2,27 +2,23 @@
  * Intel ACPI Component Architecture
  * AML/ASL+ Disassembler version 20190816 (64-bit version)
  * Copyright (c) 2000 - 2019 Intel Corporation
- *
+ * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of examples/DSDT-F7.dat, Fri Sep 13 21:31:04 2019
+ * Disassembly of extract/DSDT.dat, Sat Sep 14 22:29:11 2019
  *
  * Original Table Header:
  *     Signature        "DSDT"
- *     Length           0x0000D655 (54869)
- *     Revision         0x02
- *     Checksum         0xEB
+ *     Length           0x0000D334 (54068)
+ *     Revision         0x03
+ *     Checksum         0xE6
  *     OEM ID           "ALASKA"
  *     OEM Table ID     "A M I "
  *     OEM Revision     0x01072009 (17244169)
  *     Compiler ID      "INTL"
- *     Compiler Version 0x20160930 (538315056)
- *
- * Version 4:
- *   S3 works, but no I2C devices are recognized from the boot time.  Keyboard is totally
- *   functional w.r.t. S3 sleep.
+ *     Compiler Version 0x20190816 (538511382)
  */
-DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
+DefinitionBlock ("", "DSDT", 3, "ALASKA", "A M I ", 0x01072009)
 {
     External (_SB_.CHRG, DeviceObj)
     External (_SB_.CPU0._PPC, IntObj)
@@ -712,7 +708,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
     Name (SS3, One)
     Name (SS4, One)
     Name (IOST, 0xC400)
-    Name (TOPM, 0x00000000)
+    Name (TOPM, 0x00)
     Name (ROMS, 0xFFE00000)
     Name (VGAF, One)
     Name (WAKP, Package (0x02)
@@ -1834,11 +1830,11 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     CreateQWordField (RES0, \_SB.PCI0._Y01._MIN, M3MN)  // _MIN: Minimum Base Address
                     CreateQWordField (RES0, \_SB.PCI0._Y01._MAX, M3MX)  // _MAX: Maximum Base Address
                     M3MN = (MABH << 0x20)
-                    M3MN |= MABL /* \_SB_.PCI0._CRS.M3MN */
+                    M3MN |= MABL /* \_SB_.PCI0.MABL */
                     M3MX = (MAMH << 0x20)
-                    M3MX |= MAML /* \_SB_.PCI0._CRS.M3MX */
+                    M3MX |= MAML /* \_SB_.PCI0.MAML */
                     M3LN = (MALH << 0x20)
-                    M3LN |= MALL /* \_SB_.PCI0._CRS.M3LN */
+                    M3LN |= MALL /* \_SB_.PCI0.MALL */
                 }
 
                 Return (RES0) /* \_SB_.PCI0.RES0 */
@@ -3038,7 +3034,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
 
         Method (GINX, 1, Serialized)
         {
-            Return ((Arg0 -= 0x0600 / 0x10))
+            Return (Arg0 -= (0x0600 / 0x10))
         }
 
         Method (SHPO, 2, Serialized)
@@ -12356,14 +12352,14 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     PKG1 [Zero] = (B1ST & 0x07)
                     If ((B1ST & One))
                     {
-                        Local0 = (B1CR * B1FV)
-                        Local0 = (Local0 / 0x03E8)
+                        Local0 = (B1CR * B1FV) /* \_SB_.PCI0.SBRG.H_EC.B1FV */
+                        Local0 /= 0x03E8
                         PKG1 [One] = Local0
                     }
                     Else
                     {
-                        Local0 = (B1CR * B1FV)
-                        Local0 = (Local0 / 0x03E8)
+                        Local0 = (B1CR * B1FV) /* \_SB_.PCI0.SBRG.H_EC.B1FV */
+                        Local0 /= 0x03E8
                         PKG1 [One] = Local0
                     }
 
