@@ -31,6 +31,7 @@ clean:
 	rm -rf extract
 	rm -rf kernel
 	rm -rf initrd_dsdt
+	rm -f *.cpio
 
 extract:
 	mkdir -p extract
