@@ -17,8 +17,9 @@
  *     OEM Revision     0x01072009 (17244169)
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20160930 (538315056)
- *  Last Change: Currently, keyboard works, but the I2C devices are totally bonked out.
- *  This FIX-V5
+ *
+ * V5 Version:
+ *    Everything works except for keyboard.  Keyboard fails after S3 sleep.
  */
 DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
 {

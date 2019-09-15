@@ -17,6 +17,9 @@
  *     OEM Revision     0x01072009 (17244169)
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20190816 (538511382)
+ *
+ * Version 4:
+ *   S3 is working, and keyboard comes back.  But all I2C are disabled.
  */
 DefinitionBlock ("", "DSDT", 3, "ALASKA", "A M I ", 0x01072009)
 {
