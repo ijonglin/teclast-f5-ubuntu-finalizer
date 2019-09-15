@@ -18,10 +18,8 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20160930 (538315056)
  *
- *  Version 6:
- *    After testing, same as V5 except HECI has been added to the
- *    the system dependencies.  However, no changes in functionality
- *    compared to V5.  Need to get the V4 fix into V7 now.
+ *  Version 7:
+ *    To be tested.
  */
 DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
 {
@@ -176,7 +174,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
         }
     }
 
-    OperationRegion (GNVS, SystemMemory, 0x799F2118, 0x0442)
+    OperationRegion (GNVS, SystemMemory, 0x799F2118, 0x044A)
     Field (GNVS, AnyAcc, Lock, Preserve)
     {
         OSYS,   16, 
@@ -698,6 +696,8 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
         SADS,   8, 
         ITSS,   8, 
         PRCO,   16, 
+        U20A,   32, 
+        AUPL,   32, 
         SGMD,   8, 
         EPBA,   32, 
         HYSS,   32, 
@@ -6627,6 +6627,18 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                         0x08,               // Length
                         )
                 })
+                OperationRegion (CMS1, SystemCMOS, Zero, 0x71)
+                Field (CMS1, ByteAcc, NoLock, Preserve)
+                {
+                    AccessAs (ByteAcc, 0x00), 
+                    CM00,   8, 
+                    CM01,   8, 
+                    CM02,   8, 
+                    CM03,   8, 
+                    CM04,   8, 
+                    CM05,   8, 
+                    CM06,   8
+                }
             }
 
             Device (HPET)
@@ -12010,12 +12022,22 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Return (Local0)
             }
 
-            Method (_Q06, 0, NotSerialized)  // _Qxx: EC Query
+            Method (_Q02, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            {
+                Notify (^^^GFX0.DD1F, 0x88) // Device-Specific
+            }
+
+            Method (_Q08, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            {
+                ^^^^HIDD.HPEM (0x08)
+            }
+
+            Method (_Q09, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
             {
                 ^^^^HIDD.HPEM (0x14)
             }
 
-            Method (_Q07, 0, NotSerialized)  // _Qxx: EC Query
+            Method (_Q10, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
             {
                 ^^^^HIDD.HPEM (0x13)
             }
@@ -12057,7 +12079,19 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Notify (UBTC, 0x80) // Status Change
             }
 
-            Method (_QD5, 0, NotSerialized)  // _Qxx: EC Query
+            Method (_Q85, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            {
+                P8XH (Zero, 0x85)
+                Notify (HIDD, 0xC2) // Hardware-Specific
+            }
+
+            Method (_Q8A, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            {
+                P8XH (Zero, 0x8A)
+                Notify (HIDD, 0xC3) // Hardware-Specific
+            }
+
+            Method (_QD5, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
             {
                 P8XH (Zero, 0xD5)
                 PWPR ()
