@@ -17,9 +17,8 @@
  *     OEM Revision     0x01072009 (17244169)
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20160930 (538315056)
- *
- *  Version 5:
- *    S3 works, and mouse comes back but keyboard now turns off.  Almost there!
+ *  Last Change: Currently, keyboard works, but the I2C devices are totally bonked out.
+ *  This FIX-V5
  */
 DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
 {
@@ -37,8 +36,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
     External (_SB_.PCI0.GFX0.CLID, UnknownObj)
     External (_SB_.PCI0.GFX0.DD1F, UnknownObj)
     External (_SB_.PCI0.GFX0.GLID, MethodObj)    // 1 Arguments
-    External (_SB_.PCI0.TSTM, MethodObj)    // 3 Arguments
-    External (_SB_.SGOV, MethodObj)    // 2 Arguments
     External (_SB_.UBTC, DeviceObj)
     External (_SB_.UBTC.CCI0, IntObj)
     External (_SB_.UBTC.CCI1, IntObj)
@@ -176,7 +173,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
         }
     }
 
-    OperationRegion (GNVS, SystemMemory, 0x79ADA118, 0x044A)
+    OperationRegion (GNVS, SystemMemory, 0x799F2118, 0x0442)
     Field (GNVS, AnyAcc, Lock, Preserve)
     {
         OSYS,   16, 
@@ -698,8 +695,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
         SADS,   8, 
         ITSS,   8, 
         PRCO,   16, 
-        U20A,   32, 
-        AUPL,   32, 
         SGMD,   8, 
         EPBA,   32, 
         HYSS,   32, 
@@ -3586,7 +3581,28 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     Name (_ADR, 0x06)  // _ADR: Address
                     Method (_UPC, 0, Serialized)  // _UPC: USB Port Capabilities
                     {
-                        Return (GUPC (Zero, 0xFF))
+                        Return (GUPC (0xFF, 0x06))
+                    }
+
+                    Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
+                    {
+                        Return (GPLD (One, 0x06))
+                    }
+                }
+
+                Device (HS07)
+                {
+                    Name (_ADR, 0x07)  // _ADR: Address
+                    Method (_UPC, 0, Serialized)  // _UPC: USB Port Capabilities
+                    {
+                        Name (UPCP, Package (0x04)
+                        {
+                            0xFF, 
+                            0xFF, 
+                            Zero, 
+                            Zero
+                        })
+                        Return (UPCP) /* \_SB_.PCI0.XHC_.RHUB.HS07._UPC.UPCP */
                     }
 
                     Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
@@ -3596,19 +3612,26 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                             Buffer (0x14)
                             {
                                 /* 0000 */  0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
-                                /* 0008 */  0x40, 0x08, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00,  // @.......
+                                /* 0008 */  0x40, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,  // @.......
                                 /* 0010 */  0xFF, 0xFF, 0xFF, 0xFF                           // ....
                             }
                         })
-                        Return (PLDP) /* \_SB_.PCI0.XHC_.RHUB.HS06._PLD.PLDP */
+                        Return (PLDP) /* \_SB_.PCI0.XHC_.RHUB.HS07._PLD.PLDP */
                     }
 
-                    Device (WCAM)
+                    Device (FCAM)
                     {
-                        Name (_ADR, 0x06)  // _ADR: Address
+                        Name (_ADR, 0x07)  // _ADR: Address
                         Method (_UPC, 0, Serialized)  // _UPC: USB Port Capabilities
                         {
-                            Return (GUPC (Zero, 0xFF))
+                            Name (UPCP, Package (0x04)
+                            {
+                                0xFF, 
+                                0xFF, 
+                                Zero, 
+                                Zero
+                            })
+                            Return (UPCP) /* \_SB_.PCI0.XHC_.RHUB.HS07.FCAM._UPC.UPCP */
                         }
 
                         Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
@@ -3618,26 +3641,12 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                                 Buffer (0x14)
                                 {
                                     /* 0000 */  0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
-                                    /* 0008 */  0x60, 0x08, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00,  // `.......
+                                    /* 0008 */  0x60, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,  // `.......
                                     /* 0010 */  0xFF, 0xFF, 0xFF, 0xFF                           // ....
                                 }
                             })
-                            Return (PLDP) /* \_SB_.PCI0.XHC_.RHUB.HS06.WCAM._PLD.PLDP */
+                            Return (PLDP) /* \_SB_.PCI0.XHC_.RHUB.HS07.FCAM._PLD.PLDP */
                         }
-                    }
-                }
-
-                Device (HS07)
-                {
-                    Name (_ADR, 0x07)  // _ADR: Address
-                    Method (_UPC, 0, Serialized)  // _UPC: USB Port Capabilities
-                    {
-                        Return (GUPC (0xFF, 0xFF))
-                    }
-
-                    Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
-                    {
-                        Return (GPLD (Zero, 0x0B))
                     }
                 }
 
@@ -3652,36 +3661,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
                     {
                         Return (GPLD (One, 0x08))
-                    }
-
-                    Device (FCAM)
-                    {
-                        Name (_ADR, 0x08)  // _ADR: Address
-                        Method (_UPC, 0, Serialized)  // _UPC: USB Port Capabilities
-                        {
-                            Name (UPCP, Package (0x04)
-                            {
-                                0xFF, 
-                                0xFF, 
-                                Zero, 
-                                Zero
-                            })
-                            Return (UPCP) /* \_SB_.PCI0.XHC_.RHUB.HS08.FCAM._UPC.UPCP */
-                        }
-
-                        Method (_PLD, 0, Serialized)  // _PLD: Physical Location of Device
-                        {
-                            Name (PLDP, Package (0x01)
-                            {
-                                Buffer (0x14)
-                                {
-                                    /* 0000 */  0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // ........
-                                    /* 0008 */  0x60, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,  // `.......
-                                    /* 0010 */  0xFF, 0xFF, 0xFF, 0xFF                           // ....
-                                }
-                            })
-                            Return (PLDP) /* \_SB_.PCI0.XHC_.RHUB.HS08.FCAM._PLD.PLDP */
-                        }
                     }
                 }
 
@@ -4200,13 +4179,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) eMMC Controller - 808631CC")  // _DDN: DOS Device Name
                 Name (_UID, One)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 OperationRegion (PMCS, PCI_Config, 0x84, 0x04)
                 Field (PMCS, WordAcc, NoLock, Preserve)
@@ -4362,13 +4337,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     Local0 &= One
                 }
 
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4390,13 +4361,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Name (_DDN, "Intel(R) SDIO Controller - 808631D0")  // _DDN: DOS Device Name
                 Name (_UID, One)  // _UID: Unique ID
                 Name (_S0W, 0x03)  // _S0W: S0 Device Wake State
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Name (PSTS, Zero)
                 OperationRegion (SCPC, PCI_Config, 0xA0, 0x04)
@@ -4723,13 +4690,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Name (_ADR, 0x001A0000)  // _ADR: Address
                 Name (_DDN, "Intel(R) PWM Controller")  // _DDN: DOS Device Name
                 Name (_UID, One)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4741,13 +4704,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) HS-UART Controller #1")  // _DDN: DOS Device Name
                 Name (_UID, One)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4759,13 +4718,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) HS-UART Controller #2")  // _DDN: DOS Device Name
                 Name (_UID, 0x02)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4784,13 +4739,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) HS-UART Controller #3")  // _DDN: DOS Device Name
                 Name (_UID, 0x03)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4802,13 +4753,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) HS-UART Controller #4")  // _DDN: DOS Device Name
                 Name (_UID, 0x04)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4820,13 +4767,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) SPI Controller #1")  // _DDN: DOS Device Name
                 Name (_UID, One)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4838,13 +4781,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) SPI Controller #2")  // _DDN: DOS Device Name
                 Name (_UID, 0x02)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -4856,13 +4795,9 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             {
                 Name (_DDN, "Intel(R) SPI Controller #3")  // _DDN: DOS Device Name
                 Name (_UID, 0x03)  // _UID: Unique ID
-                Name (RBUF, ResourceTemplate ()
+                Name (RBUF, Buffer (0x02)
                 {
-                    Register (SystemMemory, 
-                        0x00,               // Bit Width
-                        0x00,               // Bit Offset
-                        0x0000000000000000, // Address
-                        ,)
+                     0x79, 0x00                                       // y.
                 })
                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 {
@@ -6689,18 +6624,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                         0x08,               // Length
                         )
                 })
-                OperationRegion (CMS1, SystemCMOS, Zero, 0x71)
-                Field (CMS1, ByteAcc, NoLock, Preserve)
-                {
-                    AccessAs (ByteAcc, 0x00), 
-                    CM00,   8, 
-                    CM01,   8, 
-                    CM02,   8, 
-                    CM03,   8, 
-                    CM04,   8, 
-                    CM05,   8, 
-                    CM06,   8
-                }
             }
 
             Device (HPET)
@@ -7207,8 +7130,20 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             }
         }
 
+        Notify (\_SB.PWRB, 0x02) // Device Wake
         If (((Arg0 == 0x03) || (Arg0 == 0x04)))
         {
+            IDX1 = 0x10
+            Local0 = DTA1 /* \DTA1 */
+            If ((Local0 == One))
+            {
+                \_SB.SPC0 (0x00C509C0, 0x40900201)
+            }
+            Else
+            {
+                \_SB.SPC0 (0x00C509C0, 0x40900200)
+            }
+
             If ((PFLV == FMBL)){}
             If ((ECON == One))
             {
@@ -7250,7 +7185,8 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
             \_SB.PCI0.SDC.WAK ()
         }
 
-        Notify (\_SB.PWRB, 0x02) // Device Wake
+	// Remove extra notify
+        // Notify (\_SB.PWRB, 0x02) // Device Wake
         Local1 = \_SB.GPC0 (0x00C50820)
         Local1 &= 0xFFFFE3FF
         Local1 |= 0x0400
@@ -10545,14 +10481,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 PEPD
             })
         }
-
-        Scope (_SB.PCI0.HECI)
-        {
-            Name (_DEP, Package (0x01)  // _DEP: Dependencies
-            {
-                PEPD
-            })
-        }
     }
 
     Scope (_SB)
@@ -10571,7 +10499,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                     "\\_SB.PCI0.GFX0"
                 }
             })
-            Name (DEVY, Package (0x1E)
+            Name (DEVY, Package (0x1D)
             {
                 Package (0x03)
                 {
@@ -10998,7 +10926,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Package (0x03)
                 {
                     "\\_SB.PCI0.RP05", 
-                    Zero, 
+                    One, 
                     Package (0x02)
                     {
                         Zero, 
@@ -11006,22 +10934,6 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                         {
                             0xFF, 
                             0x03
-                        }
-                    }
-                }, 
-
-                Package (0x03)
-                {
-                    "\\_SB.PCI0.HECI", 
-                    One, 
-                    Package (0x02)
-                    {
-                        Zero, 
-                        Package (0x03)
-                        {
-                            0xFF, 
-                            Zero, 
-                            0x81
                         }
                     }
                 }
@@ -12071,22 +11983,12 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Return (Local0)
             }
 
-            Method (_Q02, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
-            {
-                Notify (^^^GFX0.DD1F, 0x88) // Device-Specific
-            }
-
-            Method (_Q08, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
-            {
-                ^^^^HIDD.HPEM (0x08)
-            }
-
-            Method (_Q09, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            Method (_Q06, 0, NotSerialized)  // _Qxx: EC Query
             {
                 ^^^^HIDD.HPEM (0x14)
             }
 
-            Method (_Q10, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            Method (_Q07, 0, NotSerialized)  // _Qxx: EC Query
             {
                 ^^^^HIDD.HPEM (0x13)
             }
@@ -12128,19 +12030,7 @@ DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
                 Notify (UBTC, 0x80) // Status Change
             }
 
-            Method (_Q85, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
-            {
-                P8XH (Zero, 0x85)
-                Notify (HIDD, 0xC2) // Hardware-Specific
-            }
-
-            Method (_Q8A, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
-            {
-                P8XH (Zero, 0x8A)
-                Notify (HIDD, 0xC3) // Hardware-Specific
-            }
-
-            Method (_QD5, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+            Method (_QD5, 0, NotSerialized)  // _Qxx: EC Query
             {
                 P8XH (Zero, 0xD5)
                 PWPR ()
