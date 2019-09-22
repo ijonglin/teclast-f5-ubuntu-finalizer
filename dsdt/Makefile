@@ -34,6 +34,8 @@ clean:
 	rm -rf initrd_dsdt
 	rm -f *.cpio
 	rm -f *.hex
+	rm -f src/*.aml
+	rm -f src/*.log
 
 extract:
 	mkdir -p extract
