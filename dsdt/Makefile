@@ -16,6 +16,7 @@ IASL_TARGETS = \
 help:
 	@echo "Makefile Targets for DSDT Override Environment:"
 	@echo "   clean -- remove all extract and modified ACPI tables"
+	@echo "   dsdt_patch -- Latest DSDT Patch"
 	@echo "   extract -- dump all DSDT and SSDT tables from ACPI tables"
 	@echo "   disassemble -- disassemble the dumped tables into ACPI standard language"
 	@echo "   assemble -- assemble the edited DSDT into DSDT.aml"
@@ -23,15 +24,16 @@ help:
 	@echo ""
 	@echo "Need to install the latest version of iasl first,  of course"
 
-install: extract/DSDT.aml
-	sudo cp extract/DSDT.aml /boot/DSDT_clean_patch.aml
-	@echo "See README.md to override in Ubuntu"
+dsdt_patch: src/DSDT-FIX-TECLAST-F5-IJL-V8.hex
+	mv src/DSDT-FIX-TECLAST-F5-IJL-V8.hex .
+	@echo "Use this file to override in DSDT in the kernel build."
 
 clean:
 	rm -rf extract
 	rm -rf kernel
 	rm -rf initrd_dsdt
 	rm -f *.cpio
+	rm -f *.hex
 
 extract:
 	mkdir -p extract
