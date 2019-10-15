@@ -10,8 +10,8 @@ IASL_TARGETS = \
 	extract/SSDT7.dat \
 	extract/SSDT8.dat \
 	extract/SSDT9.dat \
-	extract/SSDT10.dat \
-	extract/SSDT11.dat
+	extract/SSDT10.dat
+#	extract/SSDT11.dat
 
 help:
 	@echo "Makefile Targets for DSDT Override Environment:"
@@ -29,6 +29,8 @@ install: extract/DSDT.aml
 
 clean:
 	rm -rf extract
+	rm -rf kernel
+	rm -rf initrd_dsdt
 
 extract:
 	mkdir -p extract
@@ -43,16 +45,35 @@ extract:
 	sudo cat /sys/firmware/acpi/tables/SSDT8 > extract/SSDT8.dat
 	sudo cat /sys/firmware/acpi/tables/SSDT9 > extract/SSDT9.dat
 	sudo cat /sys/firmware/acpi/tables/SSDT10 > extract/SSDT10.dat
-	sudo cat /sys/firmware/acpi/tables/SSDT11 > extract/SSDT11.dat
+#	sudo cat /sys/firmware/acpi/tables/SSDT11 > extract/SSDT11.dat
 
 disassemble:  extract  iasl_disassemble
 
 iasl_disassemble: $(IASL_TARGETS:.dat=.dsl)
 
-assemble: extract/DSDT.aml
+assemble: extract/DSDT.aml extract/DSDT.hex
+
+# Fri Sep 13 21:27:50 PDT 2019
+# N.B. I have not been able to successfully override the DSDT with this method.
+acpi_override.cpio:
+	mkdir -p kernel/firmware/acpi
+	cp extract/DSDT.dat kernel/firmware/acpi/dsdt.aml
+	find kernel | cpio -H newc --create > acpi_override.cpio
+
+# Fri Sep 13 21:27:50 PDT 2019
+# N.B. I have not been able to successfully override the DSDT with this method.
+install_initrd: acpi_override.cpio
+	sudo cp acpi_override.cpio /boot
+
+
+install_identity: extract
+	sudo cp extract/DSDT.dat /boot/DSDT_clean_patch.aml
 
 %.dsl : %.dat
 	iasl $(IASL_FLAGS) -da $< 2>&1 | tee $<.log
 
 %.aml : %.dsl
 	iasl $(IASL_FLAGS) -ta $? 2>&1 | tee $<.log
+
+%.hex : %.dsl
+	iasl $(IASL_FLAGS) -tc $? 2>&1 | tee $<.log
