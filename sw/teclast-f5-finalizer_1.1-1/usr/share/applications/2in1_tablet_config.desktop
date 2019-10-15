@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Exec=/usr/local/bin/go_tablet.sh inverted
+Name=Go Tablet!
+GenericName=Go Tablet
+Comment=Disable touchpad and keyboard and invert screen.
+Encoding=UTF-8
+Terminal=false
+Type=Application
+Categories=Application
+Icon=/usr/share/icons/Humanity/devices/64/multimedia-player-ipod-touch.svg
