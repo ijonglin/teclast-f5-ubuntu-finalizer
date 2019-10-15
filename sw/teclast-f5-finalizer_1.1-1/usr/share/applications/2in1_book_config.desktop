@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Exec=/usr/local/bin/go_tablet.sh left
+Name=Go Book!
+GenericName=Go Book
+Comment=Disable touchpad and keyboard and turn screen left.
+Encoding=UTF-8
+Terminal=false
+Type=Application
+Categories=Application
+Icon=/usr/share/icons/Humanity/apps/64/accessories-dictionary.svg
