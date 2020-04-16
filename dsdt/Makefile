@@ -1,4 +1,4 @@
-IASL_FLAGS =  -ve -r3 -oa
+IASL_FLAGS =  -ve -r 13 -oa
 IASL_TARGETS = \
 	extract/DSDT.dat \
 	extract/SSDT1.dat \
