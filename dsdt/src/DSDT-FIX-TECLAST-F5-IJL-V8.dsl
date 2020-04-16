@@ -22,7 +22,7 @@
  *    This version works correctly on Teclast F5 for S3 sleep
  *    along with the keyboard and mouse waking up.
  */
-DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072009)
+DefinitionBlock ("", "DSDT", 2, "ALASKA", "A M I ", 0x01072010)
 {
     External (_SB_.CHRG, DeviceObj)
     External (_SB_.CPU0._PPC, IntObj)
