@@ -1,4 +1,5 @@
 extract
 *.cpio
 **/*.log
-**/*.dsl
+extract/**/*.dsl
+examples/**/*.dsl
