@@ -25,31 +25,32 @@ that's something that the Internet could help with.  Or not.  We'll see.
 Currently, this project targets on the following systems:
 
   * Teclast F5
-  * Teclast F7 (when it arrives)
+
+As a side note, Teclast F7 has working DSDT code, but is of poor build quality.  This
+fix is based on manual merge of the Teclast F5 DSDT code with the Teclast F7 DSDT code.
 
 ## Current Status
-
- Feature | Teclast F5
--------- | -------------
-Target Patch Kernel | 5.1.0-rc7
-Supported Linux Flavor | Ubuntu 18.04.3 LTS
-Keyboard | Works
-Touchpad | Works
-Wifi | Works at N speeds
-Sound/Audio | Works
-USB  | Works
-USB Camera | Works
-Video Acceleration | Works @ 1080p
-Streaming Video: Netflix, HBO Now | Works
-Web Telephony: Skype, Google Hangouts | Works
-Bluetooth | Works, but janky HQ audio
-Touchscreen | NOT Working
-S0 Sleep Power Draw |  ~ 1.4W right now, but it should be better.
-S0ix Sleep | Wakes up, but never reaches only PC6, PC10
-S3 Sleep | Wakes up, but keyboard and touchpad are out
-S3 Sleep Power Draw |  ~ 1W
-Run time (on provided battery 29Wh) | 2-3 hours on a single charge
-Run time (on expanded battery 70Wh) | 6-8 hours on a single charge
+ Feature | Teclast F5 (2019) | Telcast F5 (2020)
+-------- | ----------------- | -----------------
+Target Patch Kernel | 5.1.0-rc7 | 5.5.0
+Supported Linux Flavor | Ubuntu 18.04.3 LTS | Ubuntu 20.04
+Keyboard | Works | Works
+Touchpad | Works | Works
+Wifi | Works at N speeds | Works at N speeds
+Sound/Audio | Works | Works
+USB | Works | Works
+USB Camera | Works | Works
+Video Acceleration | Works @ 1080p | Works @ 1080p
+Streaming Video: Netflix, HBO Now | Works | Works
+Web Telephony: Skype, Zoom | Works | Works
+Bluetooth | Works, but janky HQ audio | still testing
+Touchscreen | NOT Working | Working
+S0 Sleep Power Draw |  ~ 1.4W right now, but it should be better. | Same as 2019
+S0ix Sleep | Wakes up, but never reaches only PC6, PC10 | Same as 2019
+S3 Sleep | Wakes up, but keyboard and touchpad are out | Same as 2019
+S3 Sleep Power Draw |  ~ 1W | Same as 2019
+Run time (on provided battery 29Wh) | 2-3 hours on a single charge | Same as 2019
+Run time (on expanded battery 70Wh) | 6-8 hours on a single charge | Same as 2019
 
 The current configuration is acceptable as an actually stable working Linux
 well-made laptop with decent power characteristics for a remarkable price.
@@ -68,21 +69,37 @@ Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ub
 
 TODO: Create a single Makefile to drive all the modifications on a given system
 
-### BIOS Settings
+### BIOS Settings (/bios)
 Quick Notes: Key bios setting are:
-* Choose the optimized defaults as baseline.
-* To turn on the Low S0 State (which disables S3) in the Advanced -> RC ACPI Settings.
 
-TODO: Take pictures of all the BIOS screens.
+* Choose the optimized defaults to set baseline settings.
+* To turn off the Low S0 State (which disables S3) in the Advanced -> RC ACPI Settings.
+* To turn off the EC Power Notifications in the Advanced -> RC ACPI Settings.
+
+Pictures of all the BIOS screens of my current bios settings added into this subdirectory.  Note that bios settings
+are lost when battery is drained.
 
 ### Linux Kernel (/kernel)
-Will post the required patch that seems stable for me in the contents of the kernel subdirectory.  The base
-pull can be gotten directly from the git.kernel.org mainline tag.  Will try to move it forward to the latest
-versions when possible.  Happy to try to get fixes integrated, if they pass muster.
+Follow the README.md in the /kernel subdirectory.  There is Makefile-driven build that produces
+a Debian Package (.dpkg) artifact that can be used to upgrade the kernel on vanilla Ubuntu 20.04
+install. The package is built directly from the git.kernel.org mainline tag.
+
 
 The magical pieces of information that you need are as follows:
 
-* Current mailnine tag kernel to patch that works with Ubuntu 18.04 is : __v5.1.0-rc7__
+Ubuntu 20.04
+* Current mainline tag kernel to patch that works with Ubuntu 20.04 is : __v5.5__
+   * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (fetch)
+   * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (push)
+* NO kernel patches are required.
+   * Note that the v5.4.0 Ubuntu Linux works, but may have i915 stability bug.
+* ONLY changes required in .config
+   * CONFIG_ACPI_CUSTOM_DSDT_FILE="Location of the custom DSDT file"
+       * The DSDT override file is in /dsdt/DSDT-TECLAST-F5-2020-06-16.hex
+   * CONFIG_ACPI_CUSTOM_DSDT=y
+
+Ubuntu 18.04.3
+* Current mainline tag kernel to patch that works with Ubuntu 18.04 is : __v5.1.0-rc7__
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (fetch)
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (push)
 * Mutex locking patch is available in /kernel
@@ -92,22 +109,18 @@ The magical pieces of information that you need are as follows:
    * TODO: Put a link to kernel build page
    * Try out: make -j `getconf _NPROCESSORS_ONLN` deb-pkg LOCALVERSION=-teclast-f5-finalized
 
+Will try to move it forward when Ubuntu LTS versions are made available.  Happy to try to get fixes integrated, 
+if they pass muster.
+
+TODO: There is alternate method for overriding DSDT via initrd.  See alternative instructions in /dsdt subdirectory.
 
 ### System Modifications (/sw)
 Even with the patched kernel, some system customizations must be made to guarantee stability.  These changes
 regard kernel blacklist and preparation for kernel module sleep.  Will post the required patch that seems stable for me.
 
-Quick notes: Some modifications that are necessary:
+Some modifications that have been added:
 * To consistently get the touchpad to come back from sleep, you will have to remove and add the i2c-hid
 kernel module before and after sleep, respectively.
-
-TODO: Create the code to automagically create the dpkg for installation.  Also, learn how to do that.
-
-### Power Testing
-I've collected most of the scripts and documentation for figuring out whether the sleep actually going into
-the Si0x deep sleep states.  Currently, it doesn't.  But maybe someone out there can help me figure it out.
-
-TODO: Upload the collected scripts and instructions into the repo.
 
 ### ACPI Tables -- DSDT (/dsdt)
 I've put together a rudimentary development system to modify the DSDT tables.  Once again, it seems pretty
@@ -124,6 +137,12 @@ easiest software solution is a hardware solution.  8 hour worktime charge hits t
 for me.
 
 TODO: Post the 3-D printed extension holder for the larger, and some instructions on how to solder everything together.
+
+### TODO: Power Testing
+I've collected most of the scripts and documentation for figuring out whether the sleep actually going into
+the Si0x deep sleep states.  Currently, it doesn't.  But maybe someone out there can help me figure it out.
+
+TODO: Upload the collected scripts and instructions into the repo.
 
 ## About Myself
 I'm an old fashioned Electrical Engineer that does a lot of full stack software development, and, I mean, really full stack.
