@@ -30,8 +30,8 @@ As a side note, Teclast F7 has working DSDT code, but is of poor build quality. 
 fix is based on manual merge of the Teclast F5 DSDT code with the Teclast F7 DSDT code.
 
 ## Current Status
- Feature | Teclast F5 (2019) | Telcast F5 (2020)
--------- | ----------------- | -----------------
+Feature | Teclast F5 (2019 on Ubuntu 18.04) | Telcast F5 (2020 on Ubuntu 20.04)
+------- | --------------------------------- | ---------------------------------
 Target Patch Kernel | 5.1.0-rc7 | 5.5.0
 Supported Linux Flavor | Ubuntu 18.04.3 LTS | Ubuntu 20.04
 Keyboard | Works | Works
@@ -43,11 +43,11 @@ USB Camera | Works | Works
 Video Acceleration | Works @ 1080p | Works @ 1080p
 Streaming Video: Netflix, HBO Now | Works | Works
 Web Telephony: Skype, Zoom | Works | Works
-Bluetooth | Works, but janky HQ audio | still testing
+Bluetooth | Works, but janky HQ audio | v5.5 Kernel is much better, but janky under load
 Touchscreen | NOT Working | Working
 S0 Sleep Power Draw |  ~ 1.4W right now, but it should be better. | Same as 2019
 S0ix Sleep | Wakes up, but never reaches only PC6, PC10 | Same as 2019
-S3 Sleep | Wakes up, but keyboard and touchpad are out | Same as 2019
+S3 Sleep | __Wakes up, but keyboard and touchpad are out, DEAL BREAKER__ | __Same as 2019__
 S3 Sleep Power Draw |  ~ 1W | Same as 2019
 Run time (on provided battery 29Wh) | 2-3 hours on a single charge | Same as 2019
 Run time (on expanded battery 70Wh) | 6-8 hours on a single charge | Same as 2019
@@ -59,11 +59,26 @@ good, but lacked the CPU and screen size.  This power is only here because
 the customer hW modifications currently more-than-double the battery size.
 A proper Si0x or S3 sleep state would put laptop into super cool territory.
 
+The only real __DEAL BREAKER__ was that had no usable low power mode for sleep.
+The fixes listed below solve these problems, and I've personally had now week-long
+uptimes over multiple sleep/wake-ups cycles every day.
+
 ## Pre-compiled Mods
 
 Although this is a source repo, I've decided to add the pre-compiled artifacts for those who are too lazy
 to build 'em.   Debian Packages are now available on the
 [release page](https://github.com/ijonglin/teclast-f5-ubuntu-finalizer/releases)
+
+The general steps to follow below:
+
+1.  Set the BIOS as indicated in the sections below (/bios)
+1.  Do an Vanilla Ubuntu 20.04 off of Live USB Stick
+1.  Download the debian packages off of the release page into its own directory.
+1.  Cd into the directory and run the following command:
+	```
+	sudo dpkg -i *teclast*.deb
+	```
+1.  Reboot and enjoy a system that properly wakes up from S3 sleep with a very up-to-date kernel.
 
 ## Recommended Mods
 Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ubuntu Linux Laptop
