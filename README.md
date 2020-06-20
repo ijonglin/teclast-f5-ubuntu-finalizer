@@ -62,7 +62,8 @@ A proper Si0x or S3 sleep state would put laptop into super cool territory.
 ## Pre-compiled Mods
 
 Although this is a source repo, I've decided to add the pre-compiled artifacts for those who are too lazy
-to build 'em.
+to build 'em.   Debian Packages are now available on the
+[release page](https://github.com/ijonglin/teclast-f5-ubuntu-finalizer/releases)
 
 ## Recommended Mods
 Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ubuntu Linux Laptop
