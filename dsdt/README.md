@@ -26,3 +26,9 @@ EOF
 ```bash
         acpi    /boot/DSDT_clean_patch.aml
 ```
+
+# Notes on the Provenance of Various Sources:
+
+* src/DSDT-F5.orig.dsl - The original DSL created from the DSDT.dat pulled from Telclast F5 that I owned (Trackpad/Keyboard broken)
+* src/DSDT-F7.orig.dsl - The original DSL created from the DSDT.dat pulled from Telclast F7 that I owned (Trackpad/Keyboard working)
+* DSDT-FIX-TECLAST-F5-IJL-V8.dsl - The Frankenstein merge that seems to solve the problem (Trackpad/Keyboard working with Proper BIOS settings)
