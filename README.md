@@ -91,6 +91,7 @@ Quick Notes: Key bios setting are:
 * Choose the optimized defaults to set baseline settings.
 * To turn off the Low S0 State (which disables S3) in the Advanced -> RC ACPI Settings.
 * To turn off the EC Power Notifications in the Advanced -> RC ACPI Settings.
+* Disable Quiet and Fast boot on the Boot screen
 
 Pictures of all the BIOS screens of my current bios settings added into this subdirectory.  Note that bios settings
 are lost when battery is drained.
@@ -125,8 +126,8 @@ Ubuntu 18.04.3
    * TODO: Put a link to kernel build page
    * Try out: make -j `getconf _NPROCESSORS_ONLN` deb-pkg LOCALVERSION=-teclast-f5-finalized
 
-Will try to move it forward when Ubuntu LTS versions are made available.  Happy to try to get fixes integrated, 
-if they pass muster.
+Will try to move it forward when Ubuntu LTS versions are made available.
+Happy to try to get fixes integrated, if they pass muster.
 
 TODO: There is alternate method for overriding DSDT via initrd.  See alternative instructions in /dsdt subdirectory.
 
