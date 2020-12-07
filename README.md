@@ -1,4 +1,15 @@
 # teclast-f5-ubuntu-finalizer
+
+## Update (
+
+Looks like Hans de Goede has found that root cause of the sleep problem in a lot
+of convertible tables.  He has submitted an upstream kernel patch that _may_
+resolve the issue, thereby rendering this page a lot less useful.  
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e5b1032a656e9aa4c7a4df77cb9156a2a651a5f9
+
+Will keep you updated on a kernel version that is compatible with Teclast F5.
+
 ## Overview
 
 Let's get Linux working on one of these cheap, but awesome Chinese $400 laptops
