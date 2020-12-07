@@ -1,6 +1,6 @@
 # teclast-f5-ubuntu-finalizer
 
-## Update (
+## Update (12/7/2020)
 
 Looks like Hans de Goede has found that root cause of the sleep problem in a lot
 of convertible tables.  He has submitted an upstream kernel patch that _may_
