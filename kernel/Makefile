@@ -1,4 +1,15 @@
-all: all_ubuntu_20_04
+all: all_ubuntu_upstream
+
+all_ubuntu_upstream: linux
+	(cd linux; git reset --hard)
+	(cd linux; git clean -f -d)
+	(cd linux; git checkout v5.10-rc7)
+	(cd linux; git reset --hard)
+	(cd linux; git clean -f -d)
+	(cd linux; git branch -D teclast_build_v5.10-rc7 || true)
+	(cd linux; git checkout -b teclast_build_v5.10-rc7 v5.10-rc7)
+	cd linux; yes "" | make mrproper oldconfig
+	cd linux; make -j 16 deb-pkg LOCALVERSION=-teclast-f5-finalized 2>&1 > ../build.ubuntu_20_04.log
 
 all_ubuntu_20_04: linux
 	(cd linux; git reset --hard)
