@@ -1,5 +1,8 @@
 # teclast-f5-ubuntu-finalizer
 
+## Update (12/13/2020)
+Added release v0.2 that includes the kernel build with the new upstream fix that I've confirmed.
+
 ## Update (12/10/2020)
 
 Looks like Hans de Goede has found that root cause of the sleep problem in a lot
@@ -44,27 +47,27 @@ As a side note, Teclast F7 has working DSDT code, but is of poor build quality. 
 fix is based on manual merge of the Teclast F5 DSDT code with the Teclast F7 DSDT code.
 
 ## Current Status
-Feature | Teclast F5 (2019 on Ubuntu 18.04) | Telcast F5 (2020 on Ubuntu 20.04)
-------- | --------------------------------- | ---------------------------------
-Target Patch Kernel | 5.1.0-rc7 | 5.5.0
-Supported Linux Flavor | Ubuntu 18.04.3 LTS | Ubuntu 20.04
-Keyboard | Works | Works
-Touchpad | Works | Works
-Wifi | Works at N speeds | Works at N speeds
-Sound/Audio | Works | Works
-USB | Works | Works
-USB Camera | Works | Works
-Video Acceleration | Works @ 1080p | Works @ 1080p
-Streaming Video: Netflix, HBO Now | Works | Works
-Web Telephony: Skype, Zoom | Works | Works
-Bluetooth | Works, but janky HQ audio | v5.5 Kernel is much better, but janky under load
-Touchscreen | NOT Working | Working
-S0 Sleep Power Draw |  ~ 1.4W right now, but it should be better. | Same as 2019
-S0ix Sleep | Wakes up, but never reaches only PC6, PC10 | Same as 2019
-S3 Sleep | __Wakes up, but keyboard and touchpad are out, DEAL BREAKER__ | __Same as 2019__
-S3 Sleep Power Draw |  ~ 1W | Same as 2019
-Run time (on provided battery 29Wh) | 2-3 hours on a single charge | Same as 2019
-Run time (on expanded battery 70Wh) | 6-8 hours on a single charge | Same as 2019
+Feature | Teclast F5 (2019 on Ubuntu 18.04) | Telcast F5 (2020 on Ubuntu 20.04) | Telcast F5 (12/10/2020 on Ubuntu 20.04) 
+------- | --------------------------------- | --------------------------------- | ---------------------------------------
+Target Patch Kernel | 5.1.0-rc7 | 5.5.0 | 5.10-rc7
+Supported Linux Flavor | Ubuntu 18.04.3 LTS | Ubuntu 20.04  | Ubuntu 20.04
+Keyboard | Works | Works | Works
+Touchpad | Works | Works | Works
+Wifi | Works at N speeds | Works at N speeds |  Works at N speeds
+Sound/Audio | Works | Works | Works
+USB | Works | Works | Works
+USB Camera | Works | Works | Works 
+Video Acceleration | Works @ 1080p | Works @ 1080p | Works @ 1080p
+Streaming Video: Netflix, Prime Video | Works | Works | Works
+Web Telephony: Skype, Zoom | Works | Works | Works
+Bluetooth | Works, but janky HQ audio | v5.5 Kernel is much better, but janky under load | Same as v5.5
+Touchscreen | NOT Working | Working | Working
+S0 Sleep Power Draw |  ~ 1.4W right now, but it should be better. | Same as 2019 | Same as 2019
+S0ix Sleep | Wakes up, but never reaches only PC6, PC10 | Same as 2019 | Same as 2019
+S3 Sleep | __Wakes up, but keyboard and touchpad are out, DEAL BREAKER__ | __Same as 2019__ | Works (WOOT!)
+S3 Sleep Power Draw |  ~ 1W | Same as 2019 | | Same as 2019
+Run time (on provided battery 29Wh) | 2-3 hours on a single charge | Same as 2019 | Same as 2019
+Run time (on expanded battery 70Wh) | 6-8 hours on a single charge | Same as 2019 | Same as 2019
 
 The current configuration is acceptable as an actually stable working Linux
 well-made laptop with decent power characteristics for a remarkable price.
@@ -100,6 +103,10 @@ Here's the current HW/SW Kernel/System/ACPI Modifications to Get a $400 Dream Ub
 TODO: Create a single Makefile to drive all the modifications on a given system
 
 ### BIOS Settings (/bios)
+
+With new upstream kernel fix, the Bios settings are *no longer* required to be set in any special way to ensure
+sleep will work now.  The default settings from BIOS screen or caused by battery drain will work just fine.
+
 Quick Notes: Key bios setting are:
 
 * Choose the optimized defaults to set baseline settings.
@@ -119,7 +126,13 @@ install. The package is built directly from the git.kernel.org mainline tag.
 The magical pieces of information that you need are as follows:
 
 Ubuntu 20.04
-* Current mainline tag kernel to patch that works with Ubuntu 20.04 is : __v5.5__
+* Any older mainline tag kernel to patch that works with Ubuntu 20.04 is : __v5.10-rc7__
+   * I've confirmed on v5.10-rc7, but the upstream fix is in the 5.10-rc5 and newer, and backported to 5.9.11 and later.
+* NO other changes are required now.
+* For reference, here's [fix](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e5b1032a656e9aa4c7a4df77cb9156a2a651a5f9)
+
+Ubuntu 20.04
+* An older mainline tag kernel to patch that works with Ubuntu 20.04 is : __v5.5__
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (fetch)
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (push)
 * NO kernel patches are required.
@@ -130,7 +143,7 @@ Ubuntu 20.04
    * CONFIG_ACPI_CUSTOM_DSDT=y
 
 Ubuntu 18.04.3
-* Current mainline tag kernel to patch that works with Ubuntu 18.04 is : __v5.1.0-rc7__
+* An mainline tag kernel to patch that works with Ubuntu 18.04 is : __v5.1.0-rc7__
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (fetch)
    * origin	git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git (push)
 * Mutex locking patch is available in /kernel
@@ -154,6 +167,10 @@ Some modifications that have been added:
 kernel module before and after sleep, respectively.
 
 ### ACPI Tables -- DSDT (/dsdt)
+
+With new upstream kernel fix, DSDT modifcations are *no longer* required to be set in any special way to ensure
+sleep will work now.  This section is kept for historical and possible future use.
+
 I've put together a rudimentary development system to modify the DSDT tables.  Once again, it seems pretty
 magical, but I would need some experience and some of the HW specs to figure out what magical incantation
 would actually make it work.  Doesn't seem super-hard, just super esoteric, but I'm game for anything.
