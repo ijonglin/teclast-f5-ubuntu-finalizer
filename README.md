@@ -104,12 +104,15 @@ TODO: Create a single Makefile to drive all the modifications on a given system
 
 ### BIOS Settings (/bios)
 
-With new upstream kernel fix, the Bios settings are *no longer* required to be set in any special way to ensure
+With new upstream kernel fix, some Bios settings *are* required to be set in any special way to ensure
 sleep will work now.  The default settings from BIOS screen or caused by battery drain will work just fine.
 
 Quick Notes: Key bios setting are:
 
 * Choose the optimized defaults to set baseline settings.
+* Turn off all security measures (Security Device and Secure Boot Settings), not doing so may turn off trackpad/touchscreen access.
+
+To use S3 sleep:
 * To turn off the Low S0 State (which disables S3) in the Advanced -> RC ACPI Settings.
 * To turn off the EC Power Notifications in the Advanced -> RC ACPI Settings.
 * Disable Quiet and Fast boot on the Boot screen
